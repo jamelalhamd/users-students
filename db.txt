@@ -1,0 +1,303 @@
+https://expressjs.com/en/starter/installing.html
+
+
+
+
+npm init
+npm install express
+npm install mongoose
+npm install ejs
+\\\\
+
+create file    index.js
+
+  schreibe sie in 
+Datei :
+
+     const express =required("express");
+     const app=express();
+app.use(expresss .json());/// to add parameters to body
+      app.listen(3000,()=>{});
+app.get("/hallo", (req,res)=>
+{
+ res.send("hfhgdgfsfasdas ");
+
+});
+
+============
+node index.js
+
+or
+
+npx nodemon index.js
+
+or
+npm install -g nodemon
+
+
+
+schreibe in browser :http://localhost:3000/hallo
+
+
+
+app.use(express.urlencoded({extended: true}));
+encoded. يتيح express.urlencoded({ extended: true }) لتطبيق Express تحليل هذه البيانات وجعلها متاحة في req.body.
+
+==========================
+ const express=require('express');
+const app=express();
+app.use(express.json());
+app.listen(3000,()=>{console.log('listening on port 300.0');});
+
+app.get('/hallo',(req,res)=>{
+    res.send('hello world get');
+});
+
+app.post('/hallo',(req,res)=>{
+
+    res.send('hello world PoST');
+    
+
+});
+app.put('/hallo',(req,res)=>{
+
+ res.send('hello world PUT');
+
+});
+
+app.delete('/hallo',(req,res)=>{
+
+
+res.send('hello world DELETE');
+
+});
+
+app.get('/sum/:n1/:n2',(req,res)=>{
+
+
+    let n1=parseInt(req.params.n1);
+    let n2=parseInt(req.params.n2);
+    let sum=n1+n2;
+    res.send(`sum of ${n1} and ${n2} is ${sum}`);
+
+
+
+
+});
+
+app.get('/name',(req,res)=>{
+  let n1=parseInt(req.query.n1);
+  let n2=parseInt(req.query.n2);
+let sum=n1+n2;
+
+res.send(`sum of ${n1} and ${n2} =${sum} `);
+
+});
+
+app.get('/body',(req,res)=>{
+    let n1=parseInt(req.body.n1);
+    let n2=parseInt(req.body.n2);
+  let sum=n1+n2;
+  
+  res.send(`sum of ${n1} and ${n2} =${sum} `);
+  
+  });
+
+  app.get ('/jamel',(req,res)=>{
+
+  let j={  name: "jamel",
+     age:" 41",
+     email:"jamel@hotmail.com"
+     }
+
+  res.json(j);
+  });
+
+  app.get('/jamelhtml', (req, res) => {
+    res.send("<div> <h1>Jamel</h1> </div>");
+  });
+
+
+  app.get('/jamelfilehtml', (req, res) => {
+   
+     res.sendFile(__dirname+'/views/jamel.html');
+  });
+
+
+
+
+  const path = require('path');
+
+app.get('/jamelfilehtml1', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views/jamel.html'));
+});
+
+
+app.get('/homam', (req, res) => {
+
+res.render("homam.ejs",{ name:"jamel ",
+ age:"41",
+ email:"jamel@hotmail.com",
+ city:"bad Driburg"
+})
+
+});
+
+
+///mongodb+srv://j_hamad83:<Afpc1967#>@franks.wmjjvee.mongodb.net/?retryWrites=true&w=majority&appName=Franks
+
+
+//\\\\\\\\\\\\\\\\\\\\\Dabebs==========
+const mongoose = require('mongoose'); // Import Mongoose library
+app.use(express.urlencoded({extended: true}));
+// MongoDB connection string
+const uri = 'mongodb+srv://j_hamad83:afpc1967@franks.wmjjvee.mongodb.net/?retryWrites=true&w=majority&appName=Franks';
+
+// Connecting to MongoDB
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB successfully!');
+    // Additional code after successful connection can go here
+  })
+  .catch((error) => {
+    console.error('the erroooor errrrrrrrrrrrrrrrrrrrrrrror',error);
+  });
+
+//creat folder model  and user inside it
+//===========================================
+
+
+
+
+
+
+
+===== model user============================
+
+const mongoose = require('mongoose'); // Import the library
+
+const Schema = mongoose.Schema; // Create schema (table shape)
+
+const userSchema = new Schema(
+  {
+    name: String,
+    age: Number, // Corrected to Number
+    city: String, 
+    email: String, 
+    password: String
+  }
+);
+
+const User = mongoose.model('users', userSchema); // Create table
+
+module.exports = User; // Export
+
+
+//============================================
+const User = require('./models/User');
+
+app.get('/users',(req,res)=>{
+
+res.send("DB aricles user");
+
+});
+
+app.post('/users', (req, res) => {
+  const user1 = new User({
+    name: "Jamel",
+    age: 41,
+    city: "Deir Ezzor",
+    email: "jamel@hotmail.com",
+    password: '123456'
+  });
+
+  user1.save()
+    .then(() => {
+      res.send("User added to the database");
+    })
+    .catch((error) => {
+      res.status(500).send("Error saving user to the database: " + error);
+    });
+});
+
+
+app.post('/bodyusers', (req, res) => {
+  // Extract user data from the request body
+  const { name, age, city, email, password } = req.body;
+
+  // Create a new user instance with the extracted data
+  const newUser = new User({
+    name,
+    age,
+    city,
+    email,
+    password
+  });
+
+  // Save the new user to the database
+  newUser.save()
+    .then(() => {
+      res.send("User added to the database");
+    })
+    .catch((error) => {
+      res.status(500).send("Error saving user to the database: " + error);
+    });
+});
+
+
+
+app.get('/alluser', (req, res) => {
+
+const alluser= User.find().then( (alluser)=>{res.json(alluser);}).catch((error) => {     res.status(500).json({ error: error.message });});
+
+
+
+});
+
+
+app.get('/user/:Id', (req, res) => {
+ let id=req.params.Id;
+  const alluser= User.findById(id).then( (alluser)=>{res.json(alluser);}).catch((error) => {     res.status(500).json({ error: error.message });});
+  
+  
+  
+  });
+
+  app.delete('/user/:Id', (req, res) => {
+    let id=req.params.Id;
+   User.findByIdAndDelete(id).then( (deleteduser)=>{res.json(deleteduser)}).catch((e)=>{res.send('ther is error',e)})
+
+
+  });
+  app.put('/user/:id', (req, res) => {
+    const id = req.params.id;
+    const { name, age, city, email, password } = req.body;
+  
+    // Create an object with the updated user data
+    const updatedUserData = { name, age, city, email, password };
+  
+    // Use findByIdAndUpdate to find the user by ID and update its data
+    User.findByIdAndUpdate(id, updatedUserData, { new: true })
+      .then(updatedUser => {
+        if (!updatedUser) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        res.json({ message: 'User updated successfully', updatedUser });
+      })
+      .catch(error => {
+        res.status(500).json({ error: error.message });
+      });
+  });
+
+  app.get('/showallusers', (req, res) => {
+    User.find()
+      .then(users => {
+        res.render('homam.ejs', { users });
+      })
+      .catch(error => {
+        res.status(500).send('Error fetching users from the database');
+      });
+  });
+  
+========================
+

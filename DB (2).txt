@@ -1,0 +1,2 @@
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://j_hamad83:afpc1967@franks.wmjjvee.mongodb.net/?retryWrites=true&w=majority&appName=Franks').then(() => {console.log("sucessfully connected into DB")}).catch(err => console.log(err));
