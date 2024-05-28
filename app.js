@@ -7,6 +7,8 @@ const Student = require('./models/StudentSchema');
 const mongoose = require('mongoose');
 
 
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
 
 // الاتصال بقاعدة البيانات
@@ -45,7 +47,7 @@ app.post('/addstudent', (req, res) => {
     .then(() => {
     res.redirect("/setup");
     console.log("post setup");
-    console.log("set up sucessfulz saved");
+    console.log("set up sucessfuly saved");
     })
     .catch((error) => {
       res.status(500).send('Error adding student:    ' + error);
@@ -60,6 +62,8 @@ app.listen(port, () => {
 
 
 app.get('/setup', (req, res) => { 
-  res.sendFile('./views/home.html', { root: __dirname });
+var data="";
+  Student.find().then((student) => {  res.render('home', { students: student }); }).catch((error) =>{  console.log(error); res.status(500).send});
+
   console.log("get setup");
 });
