@@ -1,8 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
 
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
+
+.btn {
+  background-color: DodgerBlue;
+  border: none;
+  border-radius: 20%;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
 
 input[type=text], select {
   width: 20%;
@@ -23,7 +41,6 @@ input[type=submit] {
   color: white;
   padding: 14px 20px;
 
-
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -33,88 +50,75 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-label{
-
-    font-size: 22px !important;
+label {
+  font-size: 22px !important;
 }
-        #customers {
 
-       
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
 
-          font-family: Arial, Helvetica, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
-          align-items: center;
-          text-align: center;
-          justify-content: center;
-  
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
 
+#customers tr:nth-child(even) {background-color: #f2f2f2;}
 
-        }
-        
-        #customers td, #customers th {
-          border: 1px solid #ddd;
-          padding: 8px;
-        }
-        
-        #customers tr:nth-child(even){background-color: #f2f2f2;}
-        
-        #customers tr:hover {background-color: #ddd;}
-        
-        #customers th {
-          padding-top: 12px;
-          padding-bottom: 12px;
-          text-align: left;
-          background-color: #04AA6D;
-          color: white;
-        }
-        </style>
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Salamn</title>
+    <title>users</title>
 </head>
-<body style="display: flex; justify-content: center; align-items: center; flex-direction: column;  margin: 0;">
-  <h1>Student List</h1>
-  <table border="1">
-    <tr>
-    
 
- <h1>Mein Name ist jamel fff jjglhgda  JKGJHGBug fashjkFAHAUF </h1>
 
- <form id="form" method="post" action="/addStudent">
-    <label style="display: inline;" for="fname">First name:</label>
-    <input type="text" id="fname" name="fname" value="John">
-    <label for="lname">Last name:</label>
-    <input type="text" id="lname" name="lname" value="Doe">
-    <label for="age">Age:</label>
-    <input type="text" id="age" name="age" value="30">
-    <label for="address">Address:</label>
-    <input type="text" id="address" name="address" value="123 Main St"><br>
-    <input type="submit" value="Submit">
-</form>
-<table   id="customers"  border="1">
-    <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Age</th>
-      <th>Address</th>
-      <th> </th>
-    </tr>
-    <% students.forEach(student => { %>
-    <tr>
-      <td><%= student.fname %></td>
-      <td><%= student.lname %></td>
-      <td><%= student.age %></td>
-      <td><%= student.address %></td>
-      <td>
-        <button>delete</button> 
-        <button>edit</button> 
-        <button>update</button> 
+
+<body >
+<div class="container">
+    <%- include('./component/nave.ejs') %>
+  
+  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;  margin: 0;">
+      <h1>users List :  <%= students.length+1 %> users</h1>
     
-    </td>
-    </tr>
-    <% }) %>
-  </table>
+      <table id="customers">
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Age</th>
+          <th>Address</th>
+          <th>Action</th>
+        </tr>
+        <%  students.forEach(student => {    %>
+        <tr>
+          <td><%= student.fname %></td>
+          <td><%= student.lname %></td>
+          <td><%= student.age %></td>
+          <td><%= student.address %></td>
+          <td>
+            <button title="delete the user" class="btn"><a href='/edituser/<%= student.id %>'><i class="fa fa-trash"></i></a></button>
+            <button title="edit the user" class="btn"><a href='/edituser/<%= student.id %>'><i class="fa fa-edit"></i></a></button>
+            <button title="view the user" class="btn">
+              <a href='/showuser/<%= student.id %>'><i class="fa fa-eye"></i></a>
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </table>
+  </div>
+</div>
 </body>
 </html>

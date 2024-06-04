@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+        }
+
+        .header, .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background-color: #04AA6D;
+            padding: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-container {
+            justify-content: center;
+            background-color: aliceblue;
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        #customers {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        .btn {
+            background-color: DodgerBlue;
+            border: none;
+            border-radius: 20%;
+            color: white;
+            padding: 12px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: RoyalBlue;
+        }
+
+        input {
+            margin: 0%;
+            height: 100%;
+            width: 100%;
+            padding: 10px 0px;
+        }
+    </style>
+    <title>Edit</title>
+</head>
+<body>
+ 
+<div class="container">
+    <%- include('./component/nave.ejs') %>
+    <div style="border-radius: 5%; padding: 10px;" class="header"> 
+        <span>ID: <%= student.id %></span>
+        <span><%= student.fname %> <%= student.lname %></span>
+    </div>
+
+    <form style="width: 100%;" method="post" action="/updateuser/<%= student.id %>?_method=PUT">
+        <table id="customers">
+            <tr>
+                <th>Name</th>
+                <td><input type="text" name="fname" value="<%= student.fname %>"></td>
+            </tr>
+            <tr>
+                <th>Last Name</th>
+                <td><input type="text" name="lname" value="<%= student.lname %>"></td>
+            </tr>
+            <tr>
+                <th>Age</th>
+                <td><input type="text" name="age" value="<%= student.age %>"></td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td><input type="text" name="address" value="<%= student.address %>"></td>
+            </tr>
+        </table>
+        <div class="btn-container">
+            <button style="background-color: blue; color: aliceblue;" type="submit" class="btn" title="edit the user"><i class="fa fa-edit"></i> Edit</button>
+            <form method="post" action="/deleteuser/<%= student.id %>?_method=DELETE">
+                <button style="background-color: red;" type="submit" class="btn btn-delete" title="delete the user"><i class="fa fa-trash"></i> Delete</button>
+            </form>
+        </div>
+        
+    </form>
+
+    
+</div>
+
+</body>
+</html>

@@ -35,7 +35,7 @@ or
 npm install -g nodemon
 
 
-
+ <%- include('./compenent.ejs',{currentpage="index"}) %>//to add compenent from anothe page
 schreibe in browser :http://localhost:3000/hallo
 
 
