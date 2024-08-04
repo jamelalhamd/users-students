@@ -1,9 +1,15 @@
 {
   "dependencies": {
     "bootstrap-icons": "^1.11.3",
+    "connect-livereload": "^0.6.1",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
+    "livereload": "^0.9.3",
     "method-override": "^3.0.0",
     "mongoose": "^8.4.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "watch": "nodemon app.js --ext js,ejs,css"
   }
 }
