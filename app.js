@@ -106,7 +106,7 @@ app.get('/edituser/:id', (req, res) => {
 app.delete('/deleteuser/:id', (req, res) => {
   Student.findByIdAndDelete(req.params.id)
     .then(() => {
-      console.log("User deleted successfully");
+      console.log("User deleted successfully kkkkkkkkkkkkkkk");
       res.redirect('/home'); // إعادة التوجيه إلى صفحة قائمة المستخدمين بعد الحذف
     })
     .catch((error) => {

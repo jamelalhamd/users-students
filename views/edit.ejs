@@ -22,7 +22,7 @@
             width: 50%;
         }
 
-        .header, .btn-container {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -31,13 +31,7 @@
             padding: 10px;
             color: white;
             font-weight: bold;
-        }
-
-        .btn-container {
-            justify-content: center;
-            background-color: aliceblue;
-            margin-top: 20px;
-            padding: 10px;
+            border-radius: 5%;
         }
 
         #customers {
@@ -68,36 +62,48 @@
             color: white;
         }
 
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Adds space between buttons */
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: aliceblue;
+        }
+
         .btn {
             background-color: DodgerBlue;
             border: none;
-            border-radius: 20%;
+            border-radius: 5px;
             color: white;
-            padding: 12px 16px;
+            padding: 12px 20px; /* Consistent padding */
             font-size: 16px;
             cursor: pointer;
-            margin: 0 10px;
+            width: 100px; /* Ensures both buttons are the same width */
+            text-align: center;
             text-decoration: none;
+        }
+
+        .btn-delete {
+            background-color: red;
         }
 
         .btn:hover {
             background-color: RoyalBlue;
         }
 
-        input {
-            margin: 0%;
-            height: 100%;
-            width: 100%;
-            padding: 10px 0px;
+        .btn-delete:hover {
+            background-color: darkred;
         }
     </style>
     <title>Edit</title>
 </head>
 <body>
- 
+
 <div class="container">
     <%- include('./component/nave.ejs') %>
-    <div style="border-radius: 5%; padding: 10px;" class="header"> 
+    <div class="header"> 
         <span>ID: <%= student.id %></span>
         <span><%= student.fname %> <%= student.lname %></span>
     </div>
@@ -121,16 +127,15 @@
                 <td><input type="text" name="address" value="<%= student.address %>"></td>
             </tr>
         </table>
+
         <div class="btn-container">
-            <button style="background-color: blue; color: aliceblue;" type="submit" class="btn" title="edit the user"><i class="fa fa-edit"></i> Edit</button>
+            <button type="submit" style="background-color: rgb(42, 190, 42);" class="btn" title="Edit the user"><i class="fa fa-edit"></i> Edit</button>
+            <!-- The delete button is part of a separate form but inside the same container -->
+            </form>
             <form method="post" action="/deleteuser/<%= student.id %>?_method=DELETE">
-                <button style="background-color: red;" type="submit" class="btn btn-delete" title="delete the user"><i class="fa fa-trash"></i> Delete</button>
+                <button type="submit" style="background-color: red;" class="btn btn-delete" title="Delete the user"><i class="fa fa-trash"></i> Delete</button>
             </form>
         </div>
-        
-    </form>
-
-    
 </div>
 
 </body>

@@ -7,7 +7,10 @@ const studentSchema = new Schema({
   lname: String,
   age:String,
   address: String,
-});
+}
+    , {timestamps:true}
+
+);
 
 const Student = mongoose.model('Student', studentSchema);
 
