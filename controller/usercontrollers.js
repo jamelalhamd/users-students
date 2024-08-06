@@ -22,7 +22,7 @@ const findallusercontroller = (req, res) => {
     Student.find()
         .then((students) => {
             res.render('home', { students: students });
-            console.log("Get setup");
+            console.log('/views/authen/signup.ejs');
         })
         .catch((error) => {
             console.log(error);
@@ -101,8 +101,24 @@ const nachaddusercontroller=function (req, res)  {
     res.render('/adduser', { done: '' }); // Clear 'done' message for fresh adduser page
   }
 
+
+  const welcomeusercontroller = function (req, res) {
+   res.render('authen/welcome');
+   
+};
+
+const signinusercontroller = function (req, res) {
+    console.log('Rendering signin page');
+    res.render('authen/signin'); 
+};
+
+const signupusercontroller = function (req, res) {
+    console.log('Rendering signup page');
+    res.render('authen/signup'); 
+};
  
-module.exports = { nachaddusercontroller,
+module.exports = {welcomeusercontroller,signupusercontroller,signinusercontroller,
+     nachaddusercontroller,
     searchusercontroller,
     updateusercontroller,
     deleteusercontroller,

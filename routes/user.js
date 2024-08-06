@@ -1,7 +1,7 @@
 const express = require('express');
 const usercontroller = require('../controller/usercontrollers');
 const router = express.Router(); // Use Router for modularity
-
+router.get('/', usercontroller.welcomeusercontroller);
 // Route to render the form to add a user
 router.get('/adduser', (req, res) => {
     res.render('adduser', {});
@@ -30,5 +30,6 @@ router.delete('/deleteuser/:id', usercontroller.deleteusercontroller);
 router.post('/search', usercontroller.searchusercontroller);
   router.get('/adduser', usercontroller.nachaddusercontroller);
 
-
+  router.get('/signup', usercontroller.signupusercontroller);
+  router.get('/signin', usercontroller.signinusercontroller);
 module.exports = router;
