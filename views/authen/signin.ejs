@@ -69,20 +69,25 @@
 
     
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-    <%- include('../component/header.ejs',{ currentPage : "login"}) %>
+    <%- include('../component/header.ejs',{ currentPage : "signin"}) %>
 
     <div class="row justify-content-center align-self-center w-100 " >
         <div class="col-md-6 col-lg-6 ">
            <div style="height: 50%"> <h1 class="mb-4">Sign in</h1></div>
-        <form class="text-start mx-auto mt-5">
+        <form method="post" action="/login" class="text-start mx-auto mt-5">
+          <% if (typeof result !== 'undefined') { %>
+            <div class="mb-3 text-danger">
+                <label><%= result %></label>
+            </div>
+        <% } %>
             <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">Email address</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+              <label  for="exampleInputEmail1" class="form-label">Email address</label>
+              <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
            
             </div>
             <div class="mb-3">
               <label for="exampleInputPassword1" class="form-label">Password</label>
-              <input type="password" class="form-control" id="exampleInputPassword1">
+              <input name="password" type="password" class="form-control" id="exampleInputPassword1">
             </div>
             <div class="mb-3 form-check">
               <input type="checkbox" class="form-check-input" id="exampleCheck1">
