@@ -1,9 +1,9 @@
 const express = require('express');
 const usercontroller = require('../controller/usercontrollers');
 const router = express.Router(); // Use Router for modularity
-router.get('/', usercontroller.welcomeusercontroller);
+router.get('/',usercontroller.requireAuth, usercontroller.welcomeusercontroller);
 // Route to render the form to add a user
-router.get('/adduser', (req, res) => {
+router.get('/adduser',usercontroller.requireAuth, (req, res) => {
     res.render('adduser', {});
     console.log("get adduser");
 });
@@ -15,16 +15,16 @@ router.post('/adduser', usercontroller.addusercontroller);
 router.get('/home', usercontroller.findallusercontroller);
 
 // Route to show a specific user by ID
-router.get('/showuser/:id', usercontroller.showusercontroller);
+router.get('/showuser/:id',usercontroller.requireAuth, usercontroller.showusercontroller);
 
 // Route to render the form to edit a user by ID
-router.get('/edituser/:id', usercontroller.findusercontroller); // Note: Use `findusercontroller` to load the user for editing
+router.get('/edituser/:id',usercontroller.requireAuth, usercontroller.findusercontroller); // Note: Use `findusercontroller` to load the user for editing
 
 // Route to handle updating a user by ID
 router.put('/updateuser/:id', usercontroller.updateusercontroller);
 
 // Route to handle deleting a user by ID
-router.delete('/deleteuser/:id', usercontroller.deleteusercontroller);
+router.delete('/deleteuser/:id',usercontroller.requireAuth, usercontroller.deleteusercontroller);
 
 // Route to handle searching for users by name
 router.post('/search', usercontroller.searchusercontroller);

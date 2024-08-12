@@ -2,6 +2,11 @@ const Student = require('../models/StudentSchema'); // Adjust the path to your S
 const jwt = require('jsonwebtoken');
 const User = require('../models/Userschema');
 const bcrypt = require('bcrypt'); // Adjust the path
+var cookieparser = require('cookie-parser');
+
+const express = require('express');
+const app = express();
+app.use(cookieparser());
 const addusercontroller = (req, res) => {
     const student1 = new Student({
         fname: req.body.fname,
@@ -105,7 +110,8 @@ const nachaddusercontroller=function (req, res)  {
 
 
   const welcomeusercontroller = function (req, res) {
-   res.render('authen/welcome');
+   //res.render('authen/welcome');
+   res.redirect("/home");
    
 };
 
@@ -174,7 +180,9 @@ const loginController = async function (req, res) {
     try {
       // Fetch user from database
       const loginUser = await User.findOne({ email: req.body.email });
-  
+ 
+
+
       if (!loginUser) {
         console.log("This email is not found in the database");
         return res.render('authen/signin', { result: "Invalid email" });
@@ -185,6 +193,8 @@ const loginController = async function (req, res) {
   
       if (match) {
         console.log("Correct email & password");
+        var token = jwt.sign({ id: loginUser._id }, "shhhhh");
+        res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
         return res.redirect('/home'); // Redirect to home page on successful login
       } else {
         console.log("Wrong password");
@@ -196,10 +206,26 @@ const loginController = async function (req, res) {
     }
   };
   
+  const requireAuth = (req, res, next) => {
+    const token = req.cookies.jwt; // Extract the JWT from the cookies
+    console.log(token); // Log the token for debugging purposes
   
-
-
-
+    if (token) {
+      jwt.verify(token, "shhhhh", (err, decodedToken) => { // Verify the token
+        if (err) { 
+          console.log("Error in token verification:", err.message); // Log the error message
+          res.redirect("/signin"); // Redirect to the signin page if there's an error
+        } else { 
+          console.log("Token verified successfully, proceeding to next middleware");
+         // res.redirect("/home");
+        next(); // Proceed to the next middleware if the token is verified successfully
+        }
+      });
+    } else {
+      console.log("No token found, redirecting to /home");
+    res.redirect("/signin");// Redirect to /home if no token is found
+    }
+  };
 module.exports = {welcomeusercontroller,signupusercontroller,signinusercontroller,
      nachaddusercontroller,
     searchusercontroller,
@@ -210,5 +236,6 @@ module.exports = {welcomeusercontroller,signupusercontroller,signinusercontrolle
     findallusercontroller,
     addusercontroller,
     createUserController,
-    loginController
+    loginController,
+    requireAuth
 };

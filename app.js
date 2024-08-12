@@ -8,7 +8,8 @@ const bodyParser = require('body-parser');
 
 const Student = require('./models/StudentSchema'); 
 const app = express(); // Initialize the app first
-
+var cookieparser = require('cookie-parser');
+app.use(cookieparser());
 // Middleware Setup
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
