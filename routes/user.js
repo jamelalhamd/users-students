@@ -1,4 +1,5 @@
 const express = require('express');
+const { check, validationResult } = require("express-validator");
 const usercontroller = require('../controller/usercontrollers');
 const router = express.Router(); // Use Router for modularity
 router.get('/',usercontroller.requireAuth, usercontroller.welcomeusercontroller);
@@ -32,8 +33,12 @@ router.post('/search', usercontroller.searchusercontroller);
 
   router.get('/signup', usercontroller.signupusercontroller);
   router.get('/signin', usercontroller.signinusercontroller);
-  router.post('/signup', usercontroller.createUserController);
+
+
+  router.post('/signup',usercontroller.validationRules, usercontroller.createUserController);
+
   router.post('/login', usercontroller.loginController);
+
   router.get("*",usercontroller.checkIfUser);
   router.get('/logout', usercontroller.sinoutcontroller);
 module.exports = router;

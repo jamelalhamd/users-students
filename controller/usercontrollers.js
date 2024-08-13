@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const express = require('express');
-
+const { check, validationResult } = require("express-validator");
 const app = express();
 app.use(cookieParser());
 
@@ -136,8 +136,21 @@ const signinusercontroller = (req, res) => {
 };
 
 // Create a new user
+const validationRules = [
+    check("email", "Please provide a valid email").isEmail(),
+    check("password", "Password must be at least 8 characters with 1 upper case letter and 1 number").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/)
+];
 const createUserController = async (req, res) => {
     try {
+
+        
+        const errors = validationResult(req);
+        console.log("error"+errors)
+        if (!errors.isEmpty()) {
+            console.log("Validation errors:", errors.array());
+            return res.render('authen/signup', { result: "Invalid email or password" });
+        }
+
         const { username, email, password } = req.body;
 
         if (!username || !email || !password) {
@@ -245,6 +258,8 @@ const sinoutcontroller=function (req, res)  {
     res.cookie("jwt", "", {  maxAge: 1 });
     res.redirect("/")
   };
+
+ 
 module.exports = {
     welcomeusercontroller,
     signupusercontroller,
@@ -261,5 +276,6 @@ module.exports = {
     loginController,
     requireAuth,
     checkIfUser,
-    sinoutcontroller
+    sinoutcontroller,
+    validationRules
 };
