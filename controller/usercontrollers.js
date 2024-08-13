@@ -1,233 +1,255 @@
-const Student = require('../models/StudentSchema'); // Adjust the path to your Student model
+const Student = require('../models/StudentSchema'); // Path to your Student model
+const User = require('../models/Userschema'); // Path to your User model
 const jwt = require('jsonwebtoken');
-const User = require('../models/Userschema');
-const bcrypt = require('bcrypt'); // Adjust the path
-var cookieparser = require('cookie-parser');
-
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
 const express = require('express');
+
 const app = express();
-app.use(cookieparser());
+app.use(cookieParser());
+
+// Student Management Controllers
+
+// Add a new student
 const addusercontroller = (req, res) => {
-    const student1 = new Student({
+    const newStudent = new Student({
         fname: req.body.fname,
         lname: req.body.lname,
         age: req.body.age,
         address: req.body.address
     });
 
-    student1.save()
+    newStudent.save()
         .then(() => {
             res.render('adduser', { done: 'User has been successfully added' });
-            console.log("Setup successfully saved");
+            console.log("User successfully saved");
         })
         .catch((error) => {
             res.status(500).send('Error adding student: ' + error);
         });
 };
 
+// Find and display all students
 const findallusercontroller = (req, res) => {
     Student.find()
         .then((students) => {
             res.render('home', { students: students });
-            console.log('/views/authen/signup.ejs');
+            console.log('All students retrieved successfully');
         })
         .catch((error) => {
-            console.log(error);
+            console.error('Error retrieving students:', error);
             res.status(500).send('Error retrieving users: ' + error);
         });
 };
 
+// Show details of a specific student
 const showusercontroller = (req, res) => {
     Student.findById(req.params.id)
         .then((student) => {
             res.render('user', { student: student });
         })
         .catch((error) => {
-            console.log(error);
+            console.error('Error retrieving student:', error);
             res.status(500).send('Error retrieving user: ' + error);
         });
 };
 
+// Find a student for editing
 const findusercontroller = (req, res) => {
     Student.findById(req.params.id)
         .then((student) => {
-            console.log("Edit user done");
             res.render('edit', { student: student });
         })
         .catch((error) => {
-            console.log("Edit user error");
-            console.log(error);
+            console.error('Error finding student for editing:', error);
             res.status(500).send('Error finding student');
         });
 };
 
+// Delete a student
 const deleteusercontroller = (req, res) => {
     Student.findByIdAndDelete(req.params.id)
         .then(() => {
             console.log("User deleted successfully");
-            res.redirect('/home'); // Redirect to the list of users after deletion
+            res.redirect('/home');
         })
         .catch((error) => {
-            console.log("Error deleting user: ", error);
+            console.error('Error deleting user:', error);
             res.status(500).send('Error deleting user');
         });
 };
 
+// Update a student's details
 const updateusercontroller = (req, res) => {
     const userId = req.params.id;
-    const updatedData = req.body; // Assuming the updated data is sent in the request body
+    const updatedData = req.body;
 
     Student.findByIdAndUpdate(userId, updatedData, { new: true })
-        .then(updatedUser => {
+        .then((updatedUser) => {
             if (!updatedUser) {
                 return res.status(404).send("User not found");
             }
-            res.redirect('/home'); 
+            res.redirect('/home');
         })
-        .catch(error => {
-            console.error("Error updating user:", error);
+        .catch((error) => {
+            console.error('Error updating user:', error);
             res.status(500).send("Internal Server Error");
         });
 };
 
+// Search for students by name
 const searchusercontroller = (req, res) => {
-    const name = req.body.name; // Assuming the search name is sent in the request body
+    const name = req.body.name;
 
     Student.find({ $or: [{ fname: name }, { lname: name }] })
-        .then(students => {
+        .then((students) => {
             res.render('home', { students: students });
         })
-        .catch(error => {
-            console.log(error);
+        .catch((error) => {
+            console.error('Error searching users:', error);
             res.status(500).send("Internal Server Error");
         });
 };
 
-
-const nachaddusercontroller=function (req, res)  {
-    res.render('/adduser', { done: '' }); // Clear 'done' message for fresh adduser page
-  }
-
-
-  const welcomeusercontroller = function (req, res) {
-   //res.render('authen/welcome');
-   res.redirect("/home");
-   
+// Render the add user page
+const nachaddusercontroller = (req, res) => {
+    res.render('adduser', { done: '' });
 };
 
-
-
-
-
-
-
-const signinusercontroller = function (req, res) {
-    console.log('Rendering signin page');
-    res.render('authen/signin'); 
+// Redirect to the home page
+const welcomeusercontroller = (req, res) => {
+    res.redirect("/home");
 };
 
+// User Authentication Controllers
 
-const signupusercontroller = function (req, res) {
+// Render the signup page
+const signupusercontroller = (req, res) => {
     console.log('Rendering signup page');
-    res.render('authen/signup'); 
+    res.render('authen/signup');
 };
- 
 
+// Render the signin page
+const signinusercontroller = (req, res) => {
+    console.log('Rendering signin page');
+    res.render('authen/signin');
+};
 
-
-
-
-
-
-// Ensure User model is imported correctly
-
-// Controller for creating a new user
-const createUserController = async function (req, res) {
+// Create a new user
+const createUserController = async (req, res) => {
     try {
-        const { username,email, password } = req.body;
+        const { username, email, password } = req.body;
 
-        // Check if the email already exists
+        if (!username || !email || !password) {
+            return res.render('authen/signup', { result: "Fill all required fields" });
+        }
+
         const existingUser = await User.findOne({ email });
         const existingUsername = await User.findOne({ username });
+
+      
+
         if (existingUser) {
             console.log('Email already in use');
             return res.render('authen/signup', { result: "The email is already in use" });
         }
+
         if (existingUsername) {
             console.log('Username already in use');
-            return res.render('authen/signup', { result: "The Usename is already in use" });
+            return res.render('authen/signup', { result: "The Username is already in use" });
         }
-      
+
+
+
         const hashedPassword = await bcrypt.hash(password, 10);
+        await User.create({ username, email, password: hashedPassword });
 
-        // Create the new user with the hashed password
-        await User.create({username, email, password: hashedPassword });
-
-        // Redirect after successful creation
-        res.redirect('/signin');
         console.log('User created successfully');
+        res.redirect('/signin');
     } catch (err) {
         console.error('Creating user failure:', err);
         res.status(500).send('Internal Server Error');
     }
 };
 
-
-
-
-
-const loginController = async function (req, res) {
+// Handle user login
+const loginController = async (req, res) => {
     try {
-      // Fetch user from database
-      const loginUser = await User.findOne({ email: req.body.email });
- 
+        const loginUser = await User.findOne({ email: req.body.email });
 
-
-      if (!loginUser) {
-        console.log("This email is not found in the database");
-        return res.render('authen/signin', { result: "Invalid email" });
-      }
-  
-      // Compare the provided password with the hashed password stored in the database
-      const match = await bcrypt.compare(req.body.password, loginUser.password);
-  
-      if (match) {
-        console.log("Correct email & password");
-        var token = jwt.sign({ id: loginUser._id }, "shhhhh");
-        res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
-        return res.redirect('/home'); // Redirect to home page on successful login
-      } else {
-        console.log("Wrong password");
-        return res.render('authen/signin', { result: "Invalid password" });
-      }
-    } catch (err) {
-      console.error('Login failure:', err);
-      res.status(500).send('Internal Server Error');
-    }
-  };
-  
-  const requireAuth = (req, res, next) => {
-    const token = req.cookies.jwt; // Extract the JWT from the cookies
-    console.log(token); // Log the token for debugging purposes
-  
-    if (token) {
-      jwt.verify(token, "shhhhh", (err, decodedToken) => { // Verify the token
-        if (err) { 
-          console.log("Error in token verification:", err.message); // Log the error message
-          res.redirect("/signin"); // Redirect to the signin page if there's an error
-        } else { 
-          console.log("Token verified successfully, proceeding to next middleware");
-         // res.redirect("/home");
-        next(); // Proceed to the next middleware if the token is verified successfully
+        if (!loginUser) {
+            console.log("Email not found");
+            return res.render('authen/signin', { result: "Invalid email" });
         }
-      });
-    } else {
-      console.log("No token found, redirecting to /home");
-    res.redirect("/signin");// Redirect to /home if no token is found
+
+        const match = await bcrypt.compare(req.body.password, loginUser.password);
+
+        if (match) {
+            console.log("Login successful");
+            const token = jwt.sign({ id: loginUser._id }, process.env.JWT_SECRET || "shhhhh", { expiresIn: '1d' });
+            res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
+            res.redirect('/home');
+        } else {
+            console.log("Invalid password");
+            res.render('authen/signin', { result: "Invalid password" });
+        }
+    } catch (err) {
+        console.error('Login failure:', err);
+        res.status(500).send('Internal Server Error');
     }
+};
+
+// Middleware to protect routes that require authentication
+const requireAuth = (req, res, next) => {
+    const token = req.cookies.jwt;
+
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET || "shhhhh", (err, decodedToken) => {
+            if (err) {
+                console.log("Token verification failed:", err.message);
+                res.redirect("/signin");
+            } else {
+                console.log("Token verified successfully");
+                next();
+            }
+        });
+    } else {
+        console.log("No token found");
+        res.redirect("/signin");
+    }
+};
+
+// Middleware to check if a user is logged in
+const checkIfUser = (req, res, next) => {
+    const token = req.cookies.jwt;
+
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET || "shhhhh", async (err, decoded) => {
+            if (err) {
+                res.locals.user = null;
+                next();
+            } else {
+                const loginUser = await User.findById(decoded.id);
+                res.locals.user = loginUser;
+                next();
+            }
+        });
+    } else {
+        res.locals.user = null;
+        next();
+    }
+};
+
+
+const sinoutcontroller=function (req, res)  {
+    res.cookie("jwt", "", {  maxAge: 1 });
+    res.redirect("/")
   };
-module.exports = {welcomeusercontroller,signupusercontroller,signinusercontroller,
-     nachaddusercontroller,
+module.exports = {
+    welcomeusercontroller,
+    signupusercontroller,
+    signinusercontroller,
+    nachaddusercontroller,
     searchusercontroller,
     updateusercontroller,
     deleteusercontroller,
@@ -237,5 +259,7 @@ module.exports = {welcomeusercontroller,signupusercontroller,signinusercontrolle
     addusercontroller,
     createUserController,
     loginController,
-    requireAuth
+    requireAuth,
+    checkIfUser,
+    sinoutcontroller
 };

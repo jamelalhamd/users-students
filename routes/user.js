@@ -3,16 +3,16 @@ const usercontroller = require('../controller/usercontrollers');
 const router = express.Router(); // Use Router for modularity
 router.get('/',usercontroller.requireAuth, usercontroller.welcomeusercontroller);
 // Route to render the form to add a user
-router.get('/adduser',usercontroller.requireAuth, (req, res) => {
+router.get('/adduser',usercontroller.checkIfUser, (req, res) => {
     res.render('adduser', {});
-    console.log("get adduser");
+  
 });
 
 // Route to handle adding a new user
 router.post('/adduser', usercontroller.addusercontroller);
 
 // Route to display all users (home page)
-router.get('/home', usercontroller.findallusercontroller);
+router.get('/home',usercontroller.checkIfUser, usercontroller.findallusercontroller);
 
 // Route to show a specific user by ID
 router.get('/showuser/:id',usercontroller.requireAuth, usercontroller.showusercontroller);
@@ -34,4 +34,6 @@ router.post('/search', usercontroller.searchusercontroller);
   router.get('/signin', usercontroller.signinusercontroller);
   router.post('/signup', usercontroller.createUserController);
   router.post('/login', usercontroller.loginController);
+  router.get("*",usercontroller.checkIfUser);
+  router.get('/logout', usercontroller.sinoutcontroller);
 module.exports = router;

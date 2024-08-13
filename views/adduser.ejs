@@ -81,38 +81,33 @@
     <title>Add User</title>
 </head>
 <body>
- 
     <div class="container">
         <%- include('./component/nave.ejs') %>
         <h1 style="text-align: center;">Add User</h1>
+       
     
         <form style="display: flex; flex-direction: column; justify-items: center; align-items: center;" id="form" method="post" action="/adduser">
 
-            <label style="display: inline;" for="fname">First name:</label>
+            <label for="fname">First name:</label>
             <input type="text" id="fname" name="fname" placeholder="Jamel" value="">
             <br>
             <label for="lname">Last name:</label>
             <input type="text" id="lname" name="lname" placeholder="Alkhlef Alhamd" value="">
             <br>
             <label for="age">Age:</label>
-            <input type="text" id="age" placeholder="41" name="age" value="">
+            <input type="text" id="age" name="age" placeholder="41" value="">
             <br>
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" placeholder="Sudstrasse 7 33014 Bad Driburg" value=""><br>
+            <input type="text" id="address" name="address" placeholder="Sudstrasse 7 33014 Bad Driburg" value="">
             <br>
             <input type="submit" value="Submit">
             <br>
 
-              <% if (typeof done !== 'undefined') { %>
-            <h1 id="result"><%= done %></h1>
-        <% } %>
+            <% if (typeof done !== 'undefined') { %>
+                <h1 id="result"><%= done %></h1>
+            <% } %>
             
         </form>
-
-    
-     
-      
     </div>
 </body>
 </html>
-
