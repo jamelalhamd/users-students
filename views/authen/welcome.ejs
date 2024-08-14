@@ -69,9 +69,15 @@
 
   <main class="px-3 mt-5 ">
     <h1>X System</h1>
+    <% if (user === null) { %>
+      <p>Please Sign In or Sign Up to access the system</p>
+    <% } else { %>
+      <h6>Welcome: <%= user.username %></h6>
+    <% } %>
+ 
     <p class="lead mt-5 ">Welecome to Website International School to mange student in this school</p>
     <p class="lead mt-5">
-      <a href="#" class="btn btn-lg btn-light fw-bold border-white bg-white">Home</a>
+      <a href="/home" class="btn btn-lg btn-light fw-bold border-white bg-white">Home</a>
       <a href="#" class="btn btn-lg  fw-bold text-light ">Conect us</a>
 
     </p>

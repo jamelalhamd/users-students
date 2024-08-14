@@ -2,7 +2,8 @@ const express = require('express');
 const { check, validationResult } = require("express-validator");
 const usercontroller = require('../controller/usercontrollers');
 const router = express.Router(); // Use Router for modularity
-router.get('/',usercontroller.requireAuth, usercontroller.welcomeusercontroller);
+router.get('/',usercontroller.checkIfUser, usercontroller.welcomeusercontroller);
+
 // Route to render the form to add a user
 router.get('/adduser',usercontroller.checkIfUser, (req, res) => {
     res.render('adduser', {});
@@ -13,7 +14,7 @@ router.get('/adduser',usercontroller.checkIfUser, (req, res) => {
 router.post('/adduser', usercontroller.addusercontroller);
 
 // Route to display all users (home page)
-router.get('/home',usercontroller.checkIfUser, usercontroller.findallusercontroller);
+router.get('/home',usercontroller.checkIfUser,usercontroller.requireAuth, usercontroller.findallusercontroller);
 
 // Route to show a specific user by ID
 router.get('/showuser/:id',usercontroller.requireAuth, usercontroller.showusercontroller);

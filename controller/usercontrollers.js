@@ -118,7 +118,8 @@ const nachaddusercontroller = (req, res) => {
 
 // Redirect to the home page
 const welcomeusercontroller = (req, res) => {
-    res.redirect("/home");
+    console.log("Welcome")
+    res.render("authen/welcome");
 };
 
 // User Authentication Controllers
