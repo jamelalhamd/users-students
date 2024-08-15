@@ -17,10 +17,10 @@ router.post('/adduser', usercontroller.addusercontroller);
 router.get('/home',usercontroller.checkIfUser,usercontroller.requireAuth, usercontroller.findallusercontroller);
 
 // Route to show a specific user by ID
-router.get('/showuser/:id',usercontroller.requireAuth, usercontroller.showusercontroller);
+router.get('/showuser/:id',usercontroller.checkIfUser, usercontroller.showusercontroller);
 
 // Route to render the form to edit a user by ID
-router.get('/edituser/:id',usercontroller.requireAuth, usercontroller.findusercontroller); // Note: Use `findusercontroller` to load the user for editing
+router.get('/edituser/:id',usercontroller.checkIfUser, usercontroller.findusercontroller); // Note: Use `findusercontroller` to load the user for editing
 
 // Route to handle updating a user by ID
 router.put('/updateuser/:id', usercontroller.updateusercontroller);
