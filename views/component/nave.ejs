@@ -29,10 +29,22 @@
       .dropdown-item {
         font-size: 0.9rem;
       }
-      text:hover{
-
-        color: #0b76e0;
-        text-decoration: underline;
+      .nav-link:hover {
+        color: #2ea709;
+       
+      }
+      .nav-item:hover, .nav-item.active {
+        background-color: #f8f9fa;
+        color: #0be05d !important;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-weight: 600;
+        font-size: large;
+      }
+      .active {
+        background-color: #f8f9fa;
+        color: #0b20e0 !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
       }
     </style>
   </head>
@@ -42,7 +54,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <!-- Brand -->
-        <a class="navbar-brand" href="/">Jamel.Tech</a>
+        <a class="navbar-brand <%= currentPage === 'teck' ? 'active' : '' %>" href="/">Jamel.Tech</a>
         
         <!-- Toggle Button for Mobile View -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,12 +64,12 @@
         <!-- Navbar Content -->
         <div class="collapse navbar-collapse" id="navbarContent">
           <!-- Left-aligned Items -->
-          <ul class="navbar-nav me-auto">
+          <ul id="nav" class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/home"><i class="bi bi-house-door"></i> Home</a>
+              <a class="nav-link <%= currentPage === 'home' ? 'active' : '' %>" aria-current="page" href="/home"><i class="bi bi-house-door"></i> Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/adduser"><i class="bi bi-person-plus"></i> Add User</a>
+              <a class="nav-link <%= currentPage === 'adduser' ? 'active' : '' %>" href="/adduser"><i class="bi bi-person-plus"></i> Add User</a>
             </li>
           </ul>
           

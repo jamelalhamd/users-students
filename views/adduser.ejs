@@ -114,7 +114,7 @@ body {
 
 <body>
     <div class="container">
-        <%- include('./component/nave.ejs') %>
+        <%- include('./component/nave.ejs',{currentPage:"adduser"}) %>
         <h1 class="title">Add User</h1>
     
         <form class="form" id="form" method="post" action="/adduser">
