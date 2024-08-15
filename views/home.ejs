@@ -6,7 +6,14 @@
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-
+  table {
+        
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+            text-align: center;
+            background-color: #b7d3c9;
+        }
 .btn {
   background-color: DodgerBlue;
   border: none;
@@ -65,17 +72,19 @@ label {
 
 #customers td, #customers th {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 8
 }
 
 #customers tr:nth-child(even) {background-color: #f2f2f2;}
-
-#customers tr:hover {background-color: #ddd;}
+#customers tr {
+  transition: all 0.3s ;
+}
+#customers tr:hover {background-color: #abd3b8; color: #1d1c1c;  font-size: 1.1em;  }
 
 #customers th {
   padding-top: 12px;
   padding-bottom: 12px;
-  text-align: left;
+  text-align: center !important;
   background-color: #04AA6D;
   color: white;
 }
@@ -87,17 +96,17 @@ label {
 
 
 
-<body >
-<div class="container">
+<body  >
+<div class="container   ">
     <%- include('./component/nave.ejs') %>
     
 
   <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;  margin: 0;">
     
   
-      <h5>Totall :  <%= students.length+1 %> users</h5>
+      <h5>Totall :  <%= students.length %> users</h5>
     
-      <table id="customers">
+      <table class="" id="customers">
         <tr>
           <th>First Name</th>
           <th>Last Name</th>

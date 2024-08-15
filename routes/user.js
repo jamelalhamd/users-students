@@ -11,7 +11,7 @@ router.get('/adduser',usercontroller.checkIfUser, (req, res) => {
 });
 
 // Route to handle adding a new user
-router.post('/adduser', usercontroller.addusercontroller);
+router.post('/adduser',usercontroller.checkIfUser, usercontroller.addusercontroller);
 
 // Route to display all users (home page)
 router.get('/home',usercontroller.checkIfUser,usercontroller.requireAuth, usercontroller.findallusercontroller);
@@ -29,7 +29,7 @@ router.put('/updateuser/:id', usercontroller.updateusercontroller);
 router.delete('/deleteuser/:id',usercontroller.requireAuth, usercontroller.deleteusercontroller);
 
 // Route to handle searching for users by name
-router.post('/search', usercontroller.searchusercontroller);
+router.post('/search',usercontroller.checkIfUser, usercontroller.searchusercontroller);
   router.get('/adduser', usercontroller.nachaddusercontroller);
 
   router.get('/signup', usercontroller.signupusercontroller);
