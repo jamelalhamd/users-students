@@ -5,33 +5,28 @@
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
+      
+      .form-container input[type=text] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+           
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
+      
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 50%;
-        }
-
-        .header {
+      .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
             background-color: #04AA6D;
-            padding: 10px;
             color: white;
-            font-weight: bold;
-            border-radius: 5%;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
         #customers {
@@ -46,18 +41,14 @@
             padding: 8px;
         }
 
-        #customers tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+      
 
-        #customers tr:hover {
-            background-color: #ddd;
-        }
+       
 
         #customers th {
             padding-top: 12px;
             padding-bottom: 12px;
-            text-align: left;
+            text-align: center;
             background-color: #04AA6D;
             color: white;
         }
@@ -90,12 +81,15 @@
         }
 
         .btn:hover {
-            background-color: RoyalBlue;
+            background-color: RoyalBlue !important;
+            color: white !important;
         }
 
         .btn-delete:hover {
             background-color: darkred;
+        
         }
+     
     </style>
     <title>Edit</title>
 </head>
@@ -103,40 +97,43 @@
 
 <div class="container">
     <%- include('./component/nave.ejs') %>
-    <div class="header"> 
-        <span>ID: <%= student.id %></span>
-        <span><%= student.fname %> <%= student.lname %></span>
-    </div>
-
-    <form style="width: 100%;" method="post" action="/updateuser/<%= student.id %>?_method=PUT">
-        <table id="customers">
-            <tr>
-                <th>Name</th>
-                <td><input type="text" name="fname" value="<%= student.fname %>"></td>
-            </tr>
-            <tr>
-                <th>Last Name</th>
-                <td><input type="text" name="lname" value="<%= student.lname %>"></td>
-            </tr>
-            <tr>
-                <th>Age</th>
-                <td><input type="text" name="age" value="<%= student.age %>"></td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td><input type="text" name="address" value="<%= student.address %>"></td>
-            </tr>
-        </table>
-
-        <div class="btn-container">
-            <button type="submit" style="background-color: rgb(42, 190, 42);" class="btn" title="Edit the user"><i class="fa fa-edit"></i> Edit</button>
-            <!-- The delete button is part of a separate form but inside the same container -->
-            </form>
-            <form method="post" action="/deleteuser/<%= student.id %>?_method=DELETE">
-                <button type="submit" style="background-color: red;" class="btn btn-delete" title="Delete the user"><i class="fa fa-trash"></i> Delete</button>
-            </form>
+    <div >
+       
+        <div class="header mt-5"> 
+            <span>ID: <%= student.id %></span>
+            <span><%= student.fname %> <%= student.lname %></span>
         </div>
+    
+        <form class="form-container" style="width: 100%;" method="post" action="/updateuser/<%= student.id %>?_method=PUT">
+            <table id="customers">
+                <tr>
+                    <th>Name</th>
+                    <td><input type="text" name="fname" value="<%= student.fname %>"></td>
+                </tr>
+                <tr>
+                    <th>Last Name</th>
+                    <td><input type="text" name="lname" value="<%= student.lname %>"></td>
+                </tr>
+                <tr>
+                    <th>Age</th>
+                    <td><input type="text" name="age" value="<%= student.age %>"></td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td><input type="text" name="address" value="<%= student.address %>"></td>
+                </tr>
+            </table>
+    
+            <div class="btn-container">
+                <button type="submit" style="background-color: rgb(42, 190, 42);" class="btn" title="Edit the user"><i class="fa fa-edit"></i> Edit</button>
+                <!-- The delete button is part of a separate form but inside the same container -->
+                </form>
+                <form method="post" action="/deleteuser/<%= student.id %>?_method=DELETE">
+                    <button type="submit" style="background-color: red;" class="btn btn-delete" title="Delete the user"><i class="fa fa-trash"></i> Delete</button>
+                </form>
+            </div>
 </div>
+
 
 </body>
 </html>
