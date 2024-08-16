@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "watch": "nodemon app.js --ext js,ejs,css"
+    "watch": "nodemon app.js --ext js,ejs,css ext*"
   },
   "name": "nodjs",
   "version": "1.0.0",
