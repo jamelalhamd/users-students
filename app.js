@@ -5,7 +5,7 @@ const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
+require('dotenv').config();
 const Student = require('./models/StudentSchema'); 
 const app = express(); // Initialize the app first
 var cookieparser = require('cookie-parser');
@@ -36,8 +36,11 @@ liveReloadServer.server.once('connection', () => {
 
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://j_hamad83:afpc1967@franks.wmjjvee.mongodb.net/?retryWrites=true&w=majority&appName=Franks')
+//mongoose.connect(  process.env.MONGODB_URL)
+mongoose.connect(process.env.MONGODB_URL)
   .then(() => {
+  
+
     console.log("Successfully connected to the database");
   })
   .catch(err => {
