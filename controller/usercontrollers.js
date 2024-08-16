@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const { check, validationResult } = require("express-validator");
+require('dotenv').config();
 const app = express();
 app.use(cookieParser());
 
@@ -200,7 +201,7 @@ const loginController = async (req, res) => {
 
         if (match) {
             console.log("Login successful");
-            const token = jwt.sign({ id: loginUser._id }, process.env.JWT_SECRET || "shhhhh", { expiresIn: '1d' });
+            const token = jwt.sign({ id: loginUser._id },  process.env.SECRET_KEY, { expiresIn: '1h5m40s' });
             res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
             res.redirect('/home');
         } else {
@@ -218,7 +219,7 @@ const requireAuth = (req, res, next) => {
     const token = req.cookies.jwt;
 
     if (token) {
-        jwt.verify(token, process.env.JWT_SECRET || "shhhhh", (err, decodedToken) => {
+        jwt.verify(token, process.env.SECRET_KEY , (err, decodedToken) => {
             if (err) {
                 console.log("Token verification failed:", err.message);
                 res.redirect("/signin");
@@ -238,7 +239,7 @@ const checkIfUser = (req, res, next) => {
     const token = req.cookies.jwt;
 
     if (token) {
-        jwt.verify(token, process.env.JWT_SECRET || "shhhhh", async (err, decoded) => {
+        jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
             if (err) {
                 res.locals.user = null;
                 next();
