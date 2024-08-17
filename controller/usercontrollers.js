@@ -1,7 +1,9 @@
 const Student = require('../models/StudentSchema'); // Path to your Student model
 const User = require('../models/Userschema'); // Path to your User model
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const { check, validationResult } = require("express-validator");
