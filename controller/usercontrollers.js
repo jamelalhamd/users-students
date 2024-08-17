@@ -203,7 +203,7 @@ const loginController = async (req, res) => {
 
         if (match) {
             console.log("Login successful");
-            const token = jwt.sign({ id: loginUser._id },  process.env.SECRET_KEY, { expiresIn: '1h5m40s' });
+            const token = jwt.sign({ id: loginUser._id },  process.env.SECRET_KEY, { expiresIn: '30m' });
             res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
             res.redirect('/home');
         } else {
