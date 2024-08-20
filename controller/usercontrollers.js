@@ -1,4 +1,4 @@
-const Student = require('../models/StudentSchema'); // Path to your Student model
+ // Path to your User model
 const User = require('../models/Userschema'); // Path to your User model
 const jwt = require('jsonwebtoken');
 //const bcrypt = require('bcrypt');
@@ -12,67 +12,132 @@ require('dotenv').config();
 const app = express();
 app.use(cookieParser());
 
-// Student Management Controllers
 
-// Add a new student
-const addusercontroller = (req, res) => {
-    const newStudent = new Student({
-        fname: req.body.fname,
-        lname: req.body.lname,
-        age: req.body.age,
-        address: req.body.address
-    });
+const addusercontroller = async (req, res) => {
+    const token = req.cookies.jwt;
+    let decoded;
+    console.log("token" + token);
+    
+    try {
+        decoded = jwt.verify(token, process.env.SECRET_KEY);
+        console.log("decoded");
+    } catch (error) {
+        return res.status(401).send('Unauthorized: Invalid token');
+    }
 
-    newStudent.save()
-        .then(() => {
-            res.render('adduser', { done: 'User has been successfully added' });
-            console.log("User successfully saved");
-        })
-        .catch((error) => {
-            res.status(500).send('Error adding student: ' + error);
+    try {
+        // Find the current user based on token
+        const user = await User.findById(decoded.id);
+        console.log("user " + user.username);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Update the current user's information
+        user.customerinfo.push({
+            fname: req.body.fname,
+            lname: req.body.lname,
+            age: req.body.age,
+            address: req.body.address
         });
+
+        // Save the updated user
+       await user.save();
+        console.log("User successfully addd");
+
+        res.render('adduser', { done: 'User has been successfully added', Users: user });
+    } catch (error) {
+        console.error('Error updating User:', error);
+
+        // Handle duplicate key error
+        if (error.code === 11000) {
+            return res.status(400).send('Duplicate key error: Email already exists');
+        }
+
+        res.status(500).send('Error updating User: ' + error);
+    }
 };
 
-// Find and display all students
+
+
 const findallusercontroller = (req, res) => {
-    Student.find()
-        .then((students) => {
-            res.render('home', { students: students });
-            console.log('All students retrieved successfully');
+   // Replace 'your_jwt_secret' with your actual secret key
+   const token = req.cookies.jwt;
+   var decoded = jwt.verify(token, process.env.SECRET_KEY);
+   console.log("decoded.id ="+decoded.id) 
+   console.log("decoded =", JSON.stringify(decoded, null, 2)); // bar
+    User.findById(decoded.id)
+        .then((Users) => {
+            const customerinfo = Users.customerinfo;
+            res.render('home', { Users: customerinfo });
+            console.log('All Users retrieved successfully');
+            //console.log(Users.username)
         })
+
+
+
         .catch((error) => {
-            console.error('Error retrieving students:', error);
+            console.error('Error retrieving Users:', error);
             res.status(500).send('Error retrieving users: ' + error);
         });
 };
 
-// Show details of a specific student
+// Show details of a specific User
 const showusercontroller = (req, res) => {
-    Student.findById(req.params.id)
-        .then((student) => {
-            res.render('user', { student: student });
+    User.findById(req.params.id)
+        .then((User) => {
+            res.render('user', { User: User });
         })
         .catch((error) => {
-            console.error('Error retrieving student:', error);
+            console.error('Error retrieving User:', error);
             res.status(500).send('Error retrieving user: ' + error);
         });
 };
-
-// Find a student for editing
 const findusercontroller = (req, res) => {
-    Student.findById(req.params.id)
-        .then((student) => {
-            res.render('edit', { student: student });
+   // User.updateOne( { _id: decoded.id },   { $push: { customerinfo: req.body } }
+    console.log(req.params.id);
+    const token = req.cookies.jwt;
+
+    try {
+        var decoded = jwt.verify(token, process.env.SECRET_KEY);
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).send('Session expired. Please log in again.');
+        } else {
+            return res.status(401).send('Unauthorized: Invalid token');
+        }
+    }
+
+    User.findById(decoded.id)
+        .then((user) => {
+            if (!user) {
+                return res.status(404).send('User not found');
+            }
+
+            // Filter the customerinfo array to find the specific entry by ID
+            const customerinfoEntry = user.customerinfo.find(info => info._id.toString() === req.params.id);
+
+            if (!customerinfoEntry) {
+                return res.status(404).send('Customer info not found');
+            }
+
+            console.log(customerinfoEntry);
+
+            // Render the 'edit' page with the found customerinfo and user details
+            res.render('edit', { Users: customerinfoEntry, author: user });
         })
         .catch((error) => {
-            console.error('Error finding student for editing:', error);
-            res.status(500).send('Error finding student');
+            console.error('Error finding User for editing:', error);
+            res.status(500).send('Error finding User');
         });
 };
 
-// Delete a student
+
+// Delete a User
 const deleteusercontroller = (req, res) => {
-    Student.findByIdAndDelete(req.params.id)
+    const token = req.cookies.jwt;
+    var decoded = jwt.verify(token, process.env.SECRET_KEY);
+    User.updateOne({_id:decoded.id},   { $pull: { customerinfo: { _id: req.params.id } } })
         .then(() => {
             console.log("User deleted successfully");
             res.redirect('/home');
@@ -83,12 +148,12 @@ const deleteusercontroller = (req, res) => {
         });
 };
 
-// Update a student's details
+// Update a User's details
 const updateusercontroller = (req, res) => {
     const userId = req.params.id;
     const updatedData = req.body;
 
-    Student.findByIdAndUpdate(userId, updatedData, { new: true })
+    User.findByIdAndUpdate(userId, updatedData, { new: true })
         .then((updatedUser) => {
             if (!updatedUser) {
                 return res.status(404).send("User not found");
@@ -101,13 +166,13 @@ const updateusercontroller = (req, res) => {
         });
 };
 
-// Search for students by name
+// Search for Users by name
 const searchusercontroller = (req, res) => {
     const name = req.body.name;
 
-    Student.find({ $or: [{ fname: name }, { lname: name }] })
-        .then((students) => {
-            res.render('home', { students: students });
+    User.find({ $or: [{ fname: name }, { lname: name }] })
+        .then((Users) => {
+            res.render('home', { Users: Users });
         })
         .catch((error) => {
             console.error('Error searching users:', error);
@@ -145,12 +210,11 @@ const validationRules = [
     check("email", "Please provide a valid email").isEmail(),
     check("password", "Password must be at least 8 characters with 1 upper case letter and 1 number").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/)
 ];
+
+
 const createUserController = async (req, res) => {
     try {
-
-        
         const errors = validationResult(req);
-        console.log("error"+errors)
         if (!errors.isEmpty()) {
             console.log("Validation errors:", errors.array());
             return res.render('authen/signup', { result: "Invalid email or password" });
@@ -159,13 +223,14 @@ const createUserController = async (req, res) => {
         const { username, email, password } = req.body;
 
         if (!username || !email || !password) {
-            return res.render('authen/signup', { result: "Fill all required fields" });
+            return res.render('authen/signup', { result: "Please fill all required fields" });
         }
 
-        const existingUser = await User.findOne({ email });
-        const existingUsername = await User.findOne({ username });
-
-      
+        // تنفيذ التحقق من البريد الإلكتروني واسم المستخدم بشكل متوازي
+        const [existingUser, existingUsername] = await Promise.all([
+            User.findOne({ email }),
+            User.findOne({ username })
+        ]);
 
         if (existingUser) {
             console.log('Email already in use');
@@ -177,38 +242,41 @@ const createUserController = async (req, res) => {
             return res.render('authen/signup', { result: "The Username is already in use" });
         }
 
-
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await User.create({ username, email, password: hashedPassword });
+  
+        await User.create({ username, email, password });
 
         console.log('User created successfully');
         res.redirect('/signin');
     } catch (err) {
         console.error('Creating user failure:', err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).render('authen/signup', { result: "Internal Server Error, please try again later." });
     }
 };
 
+
 // Handle user login
 const loginController = async (req, res) => {
+    console.log("beginning login");
     try {
         const loginUser = await User.findOne({ email: req.body.email });
 
         if (!loginUser) {
-            console.log("Email not found");
+            console.log("User not found");
             return res.render('authen/signin', { result: "Invalid email" });
         }
 
+        
+
         const match = await bcrypt.compare(req.body.password, loginUser.password);
+        console.log(" match :" + match);
 
         if (match) {
-            console.log("Login successful");
-            const token = jwt.sign({ id: loginUser._id },  process.env.SECRET_KEY, { expiresIn: '30m' });
+            const token = jwt.sign({ id: loginUser._id }, process.env.SECRET_KEY, { expiresIn: '30m' });
             res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
+            console.log("redirect to home");
             res.redirect('/home');
         } else {
-            console.log("Invalid password");
+            console.log(" rerender to authen/signin");
             res.render('authen/signin', { result: "Invalid password" });
         }
     } catch (err) {
@@ -216,6 +284,7 @@ const loginController = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
 
 // Middleware to protect routes that require authentication
 const requireAuth = (req, res, next) => {

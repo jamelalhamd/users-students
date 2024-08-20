@@ -98,13 +98,14 @@ label {
 
 <body  >
 <div class="container   ">
-    <%- include('./component/nave.ejs',{currentPage:"home"}) %>
-    
+  
+  <%- include('./component/nave.ejs', { currentPage: "home", Users: Users }) %> 
 
   <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;  margin: 0;">
     
   
-      <h5>Totall :  <%= students.length %> users</h5>
+    <h5>Totall :  <%= (Users ? Users.length : 0) %> users</h5>
+
     
       <table class="" id="customers">
         <tr>
@@ -115,18 +116,18 @@ label {
           <th>Address</th>
           <th>Action</th>
         </tr>
-        <%  students.forEach((student,index) => {    %>
+        <%  Users.forEach((User,index) => {    %>
         <tr>
           <td><%= index+1%></td>
-          <td><%= student.fname %></td>
-          <td><%= student.lname %></td>
-          <td><%= student.age %></td>
-          <td><%= student.address %></td>
+          <td><%= User.fname %></td>
+          <td><%= User.lname %></td>
+          <td><%= User.age %></td>
+          <td><%= User.address %></td>
           <td>
-            <button title="delete the user" class="btn"><a href='/edituser/<%= student.id %>'><i class="fa fa-trash"></i></a></button>
-            <button title="edit the user" class="btn"><a href='/edituser/<%= student.id %>'><i class="fa fa-edit"></i></a></button>
+            <button title="delete the user" class="btn"><a href='/edituser/<%= User.id %>'><i class="fa fa-trash"></i></a></button>
+            <button title="edit the user" class="btn"><a href='/edituser/<%= User.id %>'><i class="fa fa-edit"></i></a></button>
             <button title="view the user" class="btn">
-              <a href='/showuser/<%= student.id %>'><i class="fa fa-eye"></i></a>
+              <a href='/showuser/<%= User.id %>'><i class="fa fa-eye"></i></a>
             </button>
           </td>
         </tr>

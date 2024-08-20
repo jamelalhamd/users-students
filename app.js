@@ -6,7 +6,7 @@ const connectLivereload = require('connect-livereload');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-const Student = require('./models/StudentSchema'); 
+
 const app = express(); // Initialize the app first
 var cookieparser = require('cookie-parser');
 app.use(cookieparser());

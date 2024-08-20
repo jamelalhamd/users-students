@@ -98,29 +98,29 @@
 <div class="container">
     <%- include('./component/nave.ejs',{currentPage:"edit"}) %>
     <div >
-       
+      
         <div class="header mt-5"> 
-            <span>ID: <%= student.id %></span>
-            <span><%= student.fname %> <%= student.lname %></span>
+            <span>ID: <%= author._id %></span>
+            <span><%= Users.fname %> <%= Users.lname %></span>
         </div>
     
-        <form class="form-container" style="width: 100%;" method="post" action="/updateuser/<%= student.id %>?_method=PUT">
+        <form class="form-container" style="width: 100%;" method="post" action="/updateuser/<%= Users.id %>?_method=PUT">
             <table id="customers">
                 <tr>
                     <th>Name</th>
-                    <td><input type="text" name="fname" value="<%= student.fname %>"></td>
+                    <td><input type="text" name="fname" value="<%= Users.fname %>"></td>
                 </tr>
                 <tr>
                     <th>Last Name</th>
-                    <td><input type="text" name="lname" value="<%= student.lname %>"></td>
+                    <td><input type="text" name="lname" value="<%= Users.lname %>"></td>
                 </tr>
                 <tr>
                     <th>Age</th>
-                    <td><input type="text" name="age" value="<%= student.age %>"></td>
+                    <td><input type="text" name="age" value="<%= Users.age %>"></td>
                 </tr>
                 <tr>
                     <th>Address</th>
-                    <td><input type="text" name="address" value="<%= student.address %>"></td>
+                    <td><input type="text" name="address" value="<%= Users.address %>"></td>
                 </tr>
             </table>
     
@@ -128,7 +128,7 @@
                 <button type="submit" style="background-color: rgb(42, 190, 42);" class="btn" title="Edit the user"><i class="fa fa-edit"></i> Edit</button>
                 <!-- The delete button is part of a separate form but inside the same container -->
                 </form>
-                <form method="post" action="/deleteuser/<%= student.id %>?_method=DELETE">
+                <form method="post" action="/deleteuser/<%= Users.id %>?_method=DELETE">
                     <button type="submit" style="background-color: red;" class="btn btn-delete" title="Delete the user"><i class="fa fa-trash"></i> Delete</button>
                 </form>
             </div>

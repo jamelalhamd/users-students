@@ -81,14 +81,20 @@
 
           <!-- Right-aligned User Dropdown -->
           <ul class="navbar-nav ms-auto">
+          
+            <img src="/img/hamed.jpg" class="rounded-circle img-fluid" alt="Profile Picture" style="max-width: 40px; height: auto; box-shadow: 0px 0px 5px 2px rgba(45, 189, 45, 0.8);">
+            
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-person-circle me-2"></i> 
-                <% if (user === null) { %>
+                <% if (Users === null) { %>
                   <span>Guest</span>
                 <% } else { %>
-                  <span><%= user.username %></span>
+                  <span>
+                    <%=  Users.username %>
+                     >> </span>
                 <% } %>
+                
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a class="dropdown-item" href="/home">Profile</a></li>
