@@ -23,7 +23,7 @@ const addusercontroller = async (req, res) => {
     
     try {
         decoded = jwt.verify(token, process.env.SECRET_KEY);
-        console.log("decoded");
+       
     } catch (error) {
         return res.status(401).send('Unauthorized: Invalid token');
     }
@@ -182,11 +182,18 @@ const updateusercontroller = (req, res) => {
 // Search for Users by name
 const searchusercontroller = (req, res) => {
     const name = req.body.name;
+    const token = req.cookies.jwt;
+    var decoded = jwt.verify(token, process.env.SECRET_KEY);
+   // User.findOne({ $or: [{ fname: name }, { lname: name }] })
+   User.findOne({_id:decoded.id })
+   .then((Users) => {
+    const customerinfo = Users.customerinfo;
 
-    User.find({ $or: [{ fname: name }, { lname: name }] })
-        .then((Users) => {
-            res.render('home', { Users: Users });
-        })
+    const filteredUsers = customerinfo.filter(info => info.fname.toLowerCase().includes(name.toLowerCase()) || info.lname.toLowerCase().includes(name.toLowerCase()));
+    res.render('home', { Users: filteredUsers });
+    console.log('All Users retrieved successfully');
+    //console.log(Users.username)
+})
         .catch((error) => {
             console.error('Error searching users:', error);
             res.status(500).send("Internal Server Error");
