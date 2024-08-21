@@ -14,6 +14,9 @@ app.use(cookieParser());
 
 
 const addusercontroller = async (req, res) => {
+
+
+
     const token = req.cookies.jwt;
     let decoded;
     console.log("token" + token);
@@ -84,17 +87,28 @@ const findallusercontroller = (req, res) => {
 
 // Show details of a specific User
 const showusercontroller = (req, res) => {
-    User.findById(req.params.id)
-        .then((User) => {
-            res.render('user', { User: User });
-        })
-        .catch((error) => {
-            console.error('Error retrieving User:', error);
-            res.status(500).send('Error retrieving user: ' + error);
-        });
+  
+
+
+User.findOne({"customerinfo._id":req.params.id})
+
+.then((User) => {
+    const customerInfo = User.customerinfo.find(info => info._id.toString() === req.params.id);
+ 
+   res.render('user', { Users: customerInfo });
+})
+.catch((error) => {
+    console.error('Error retrieving User:', error);
+    return res.render('authen/signin', { result: "there is problem" });
+});
+
+
+
 };
 const findusercontroller = (req, res) => {
    // User.updateOne( { _id: decoded.id },   { $push: { customerinfo: req.body } }
+   //User.updateOne(  {"customerinfo._id":req.params.id},   { $push: { customerinfo: req.body } }
+  
     console.log(req.params.id);
     const token = req.cookies.jwt;
 
@@ -102,7 +116,8 @@ const findusercontroller = (req, res) => {
         var decoded = jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            return res.status(401).send('Session expired. Please log in again.');
+            return res.render('authen/signin', { result: "Session expired. Please log in again." });
+          
         } else {
             return res.status(401).send('Unauthorized: Invalid token');
         }
@@ -137,7 +152,8 @@ const findusercontroller = (req, res) => {
 const deleteusercontroller = (req, res) => {
     const token = req.cookies.jwt;
     var decoded = jwt.verify(token, process.env.SECRET_KEY);
-    User.updateOne({_id:decoded.id},   { $pull: { customerinfo: { _id: req.params.id } } })
+    User.updateOne({"customerinfo._id":req.params.id},   { $pull: { customerinfo: { _id: req.params.id } } })
+    //User.updateOne({_id:decoded.id},   { $pull: { customerinfo: { _id: req.params.id } } })
         .then(() => {
             console.log("User deleted successfully");
             res.redirect('/home');
@@ -150,19 +166,16 @@ const deleteusercontroller = (req, res) => {
 
 // Update a User's details
 const updateusercontroller = (req, res) => {
-    const userId = req.params.id;
-    const updatedData = req.body;
 
-    User.findByIdAndUpdate(userId, updatedData, { new: true })
-        .then((updatedUser) => {
-            if (!updatedUser) {
-                return res.status(404).send("User not found");
-            }
+     User.updateOne({"customerinfo._id":req.params.id},     { $set: { "customerinfo.$": req.body } } )
+    //User.updateOne({_id:decoded.id},   { $pull: { customerinfo: { _id: req.params.id } } })
+        .then(() => {
+            console.log("User deleted successfully");
             res.redirect('/home');
         })
         .catch((error) => {
-            console.error('Error updating user:', error);
-            res.status(500).send("Internal Server Error");
+            console.error('Error deleting user:', error);
+            res.status(500).send('Error deleting user');
         });
 };
 
@@ -271,7 +284,7 @@ const loginController = async (req, res) => {
         console.log(" match :" + match);
 
         if (match) {
-            const token = jwt.sign({ id: loginUser._id }, process.env.SECRET_KEY, { expiresIn: '30m' });
+            const token = jwt.sign({ id: loginUser._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
             res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 });
             console.log("redirect to home");
             res.redirect('/home');
