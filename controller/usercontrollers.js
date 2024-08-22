@@ -48,7 +48,7 @@ const addusercontroller = async (req, res) => {
        await user.save();
         console.log("User successfully addd");
 
-        res.render('adduser', { done: 'User has been successfully added', Users: user });
+        res.render('adduser', { done: 'User has been successfully added', authors: user });
     } catch (error) {
         console.error('Error updating User:', error);
 
@@ -72,7 +72,7 @@ const findallusercontroller = (req, res) => {
     User.findById(decoded.id)
         .then((Users) => {
             const customerinfo = Users.customerinfo;
-            res.render('home', { Users: customerinfo });
+            res.render('home', { Users: customerinfo ,authors:Users });
             console.log('All Users retrieved successfully');
             //console.log(Users.username)
         })
@@ -95,7 +95,7 @@ User.findOne({"customerinfo._id":req.params.id})
 .then((User) => {
     const customerInfo = User.customerinfo.find(info => info._id.toString() === req.params.id);
  
-   res.render('user', { Users: customerInfo });
+   res.render('user', { Users: customerInfo ,authors:User});
 })
 .catch((error) => {
     console.error('Error retrieving User:', error);
@@ -116,7 +116,7 @@ const findusercontroller = (req, res) => {
         var decoded = jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
-            return res.render('authen/signin', { result: "Session expired. Please log in again." });
+            return res.redirect('/signin', { result: "Session expired. Please log in again." });
           
         } else {
             return res.status(401).send('Unauthorized: Invalid token');
@@ -139,7 +139,7 @@ const findusercontroller = (req, res) => {
             console.log(customerinfoEntry);
 
             // Render the 'edit' page with the found customerinfo and user details
-            res.render('edit', { Users: customerinfoEntry, author: user });
+            res.render('edit', { Users: customerinfoEntry, authors: user });
         })
         .catch((error) => {
             console.error('Error finding User for editing:', error);
@@ -190,7 +190,7 @@ const searchusercontroller = (req, res) => {
     const customerinfo = Users.customerinfo;
 
     const filteredUsers = customerinfo.filter(info => info.fname.toLowerCase().includes(name.toLowerCase()) || info.lname.toLowerCase().includes(name.toLowerCase()));
-    res.render('home', { Users: filteredUsers });
+    res.render('home', { Users: filteredUsers,authors:Users });
     console.log('All Users retrieved successfully');
     //console.log(Users.username)
 })
@@ -240,7 +240,7 @@ const createUserController = async (req, res) => {
             return res.render('authen/signup', { result: "Invalid email or password" });
         }
 
-        const { username, email, password } = req.body;
+        const { username, email, password,profileImage } = req.body;
 
         if (!username || !email || !password) {
             return res.render('authen/signup', { result: "Please fill all required fields" });
@@ -249,7 +249,8 @@ const createUserController = async (req, res) => {
         // تنفيذ التحقق من البريد الإلكتروني واسم المستخدم بشكل متوازي
         const [existingUser, existingUsername] = await Promise.all([
             User.findOne({ email }),
-            User.findOne({ username })
+            User.findOne({ username }),
+         
         ]);
 
         if (existingUser) {
@@ -263,7 +264,7 @@ const createUserController = async (req, res) => {
         }
 
   
-        await User.create({ username, email, password });
+        await User.create({ username, email, password,profileImage });
 
         console.log('User created successfully');
         res.redirect('/signin');
@@ -301,7 +302,7 @@ const loginController = async (req, res) => {
         }
     } catch (err) {
         console.error('Login failure:', err);
-        res.status(500).send('Internal Server Error');
+        res.redirect('/');
     }
 };
 
@@ -353,9 +354,62 @@ const sinoutcontroller=function (req, res)  {
     res.redirect("/")
   };
 
- 
+//================================================
+
+
+const multer  = require('multer')
+const upload = multer({storage: multer.diskStorage({})});
+const cloudinary = require('cloudinary').v2
+
+
+
+   
+
+cloudinary.config({ 
+  cloud_name:process.env.CLOUD_NAME , 
+  api_key:process.env.API_KEY , 
+  api_secret: process.env.API_SECERT,
+});
+//================================================
+
+
+;  // Ensure jwt is required at the top
+
+const post_prifileImage = function (req, res, next) {
+    console.log("0");
+    console.log("file ...>>" + req.file);
+    console.log("1");
+
+    cloudinary.uploader.upload(req.file.path,{folder:"jamel_photo"} ,async (error, result) => {
+        console.log("============================================")
+        if (result) {
+            console.log("2");
+            console.log(result.secure_url);
+
+            try {  
+                var decoded = jwt.verify(req.cookies.jwt, process.env.SECRET_KEY);
+                console.log("decoded " +decoded);
+                const avatar = await User.updateOne({ _id: decoded.id }, { profileImage: result.secure_url });
+                console.log("avatar" +avatar);
+                
+                res.redirect("/home");
+            } catch (err) {
+                console.error('JWT verification failed:', err);
+                res.redirect("/home");
+            }
+        } else {
+            console.error('Cloudinary upload failed:', error);
+            res.status(500).send('Internal Server Error: Cloudinary upload failed');
+        }
+    });
+};
+
+
+
+
 module.exports = {
     welcomeusercontroller,
+    post_prifileImage,
     signupusercontroller,
     signinusercontroller,
     nachaddusercontroller,

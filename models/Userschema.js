@@ -29,8 +29,10 @@ const UserSchema = new Schema({
     lname: String,
     age: String,
     address: String,
-  }]
+  }],
+  profileImage: { type: Schema.Types.String },
 }, 
+
 { timestamps: true });
 
 // Pre-save hook to hash the password before saving it to the database
