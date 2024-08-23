@@ -1,6 +1,7 @@
  // Path to your User model
 const User = require('../models/Userschema'); // Path to your User model
 const jwt = require('jsonwebtoken');
+var moment = require('moment');
 //const bcrypt = require('bcrypt');
 const bcrypt = require('bcryptjs');
 ;
@@ -41,7 +42,10 @@ const addusercontroller = async (req, res) => {
             fname: req.body.fname,
             lname: req.body.lname,
             age: req.body.age,
-            address: req.body.address
+            address: req.body.address,
+           createdAt: Date.now(),
+            updatedAt: Date.now(),
+           
         });
 
         // Save the updated user
@@ -72,7 +76,7 @@ const findallusercontroller = (req, res) => {
     User.findById(decoded.id)
         .then((Users) => {
             const customerinfo = Users.customerinfo;
-            res.render('home', { Users: customerinfo ,authors:Users });
+            res.render('home', { Users: customerinfo ,authors:Users,moment : moment });
             console.log('All Users retrieved successfully');
             //console.log(Users.username)
         })
@@ -95,7 +99,7 @@ User.findOne({"customerinfo._id":req.params.id})
 .then((User) => {
     const customerInfo = User.customerinfo.find(info => info._id.toString() === req.params.id);
  
-   res.render('user', { Users: customerInfo ,authors:User});
+   res.render('user', { Users: customerInfo ,authors:User,moment : moment});
 })
 .catch((error) => {
     console.error('Error retrieving User:', error);
@@ -139,7 +143,7 @@ const findusercontroller = (req, res) => {
             console.log(customerinfoEntry);
 
             // Render the 'edit' page with the found customerinfo and user details
-            res.render('edit', { Users: customerinfoEntry, authors: user });
+            res.render('edit', { Users: customerinfoEntry, authors: user,moment : moment });
         })
         .catch((error) => {
             console.error('Error finding User for editing:', error);
@@ -164,20 +168,39 @@ const deleteusercontroller = (req, res) => {
         });
 };
 
-// Update a User's details
-const updateusercontroller = (req, res) => {
 
-     User.updateOne({"customerinfo._id":req.params.id},     { $set: { "customerinfo.$": req.body } } )
-    //User.updateOne({_id:decoded.id},   { $pull: { customerinfo: { _id: req.params.id } } })
-        .then(() => {
-            console.log("User deleted successfully");
-            res.redirect('/home');
-        })
-        .catch((error) => {
-            console.error('Error deleting user:', error);
-            res.status(500).send('Error deleting user');
-        });
+
+const updateusercontroller = (req, res) => {
+    const customerId = req.params.id;
+    const updatedData = req.body;
+
+    // التأكد من أن `updatedAt` يحتوي على قيمة تاريخية صالحة
+    updatedData.updatedAt = Date.now(); // أو new Date()
+
+    User.findOneAndUpdate(
+        { "customerinfo._id": customerId },
+        { $set: { "customerinfo.$": updatedData } },
+        { new: true }
+    )
+    .then((updatedUser) => {
+        if (!updatedUser) {
+            return res.status(404).send('لم يتم العثور على العميل');
+        }
+        console.log("تم تحديث معلومات العميل بنجاح");
+        res.redirect('/home');
+    })
+    .catch((error) => {
+        console.error('خطأ في تحديث المستخدم:', error);
+        res.status(500).send('خطأ في تحديث المستخدم');
+    });
 };
+
+
+
+
+
+
+
 
 // Search for Users by name
 const searchusercontroller = (req, res) => {
@@ -190,7 +213,7 @@ const searchusercontroller = (req, res) => {
     const customerinfo = Users.customerinfo;
 
     const filteredUsers = customerinfo.filter(info => info.fname.toLowerCase().includes(name.toLowerCase()) || info.lname.toLowerCase().includes(name.toLowerCase()));
-    res.render('home', { Users: filteredUsers,authors:Users });
+    res.render('home', { Users: filteredUsers,authors:Users,moment : moment });
     console.log('All Users retrieved successfully');
     //console.log(Users.username)
 })
@@ -377,7 +400,7 @@ cloudinary.config({
 
 const post_prifileImage = function (req, res, next) {
     console.log("0");
-    console.log("file ...>>" + req.file);
+    console.log("req.file ...>>" + req.file);
     console.log("1");
 
     cloudinary.uploader.upload(req.file.path,{folder:"jamel_photo"} ,async (error, result) => {

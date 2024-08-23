@@ -29,16 +29,18 @@ const UserSchema = new Schema({
     lname: String,
     age: String,
     address: String,
+    createdAt:{ type: Date, default: Date.now },
+    updatedAt:{ type: Date, default: Date.now },
   }],
   profileImage: { type: Schema.Types.String },
 }, 
-
-{ timestamps: true });
+{ timestamps: true }
+);
 
 // Pre-save hook to hash the password before saving it to the database
 UserSchema.pre("save", async function (next) {
   if (this.isModified('password') || this.isNew) {
-
+    this.updatedAt = Date.now();
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();

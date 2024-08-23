@@ -114,6 +114,8 @@ label {
           <th>Last Name</th>
           <th>Age</th>
           <th>Address</th>
+          <th>Created At</th>
+          <th>Last Update</th>
           <th>Action</th>
         </tr>
         <%  Users.forEach((User,index) => {    %>
@@ -123,6 +125,8 @@ label {
           <td><%= User.lname %></td>
           <td><%= User.age %></td>
           <td><%= User.address %></td>
+          <td> <%= moment(User.createdAt).format("DD.MM.YYYY");  %></td>
+          <td> <%= moment(User.updatedAt).fromNow() %> 
           <td>
             <button title="delete the user" class="btn"><a href='/edituser/<%= User.id %>'><i class="fa fa-trash"></i></a></button>
             <button title="edit the user" class="btn"><a href='/edituser/<%= User.id %>'><i class="fa fa-edit"></i></a></button>

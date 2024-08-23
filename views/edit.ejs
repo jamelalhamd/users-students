@@ -122,6 +122,15 @@
                     <th>Address</th>
                     <td><input type="text" name="address" value="<%= Users.address %>"></td>
                 </tr>
+                <tr>
+                    <th>Updated AT</th>
+                    <td><input type="text" name="updatedAt" value="<%= moment(Users.updatedAt).fromNow() %>"></td>
+                </tr>
+                <tr>
+                   
+                    <th>Created on</th>  
+                    <td><input type="text" readonly  value="<%= moment(Users.createdAt).format('DD.MM.YYYY') %>" ></td>
+                </tr>
             </table>
     
             <div class="btn-container">

@@ -86,7 +86,16 @@
   
       <td> <%= Users.address %></td>
     </tr>
+    <th>Last Updated</th>
   
+  
+    <td> <%= moment(Users.updatedAt).fromNow() %></td>
+  </tr>
+  <th>Created At</th>
+  
+ 
+  <td> <%= moment(Users.createdAt).format("DD.MM.YYYY");  %></td>
+</tr>
    
   </table>
 </div>
